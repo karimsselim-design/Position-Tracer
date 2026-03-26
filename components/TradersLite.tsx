@@ -9,8 +9,6 @@ import AssetIcon from './AssetIcon';
 import TraderDropdown from './TraderDropdown';
 import ControlPanel from './ControlPanel';
 import AddNewsModal from './AddNewsModal';
-import TraderBubbles from './TraderBubbles';
-import TraderHeatmapGrid from './TraderHeatmapGrid';
 
 interface PriceMeta {
   price: number;
@@ -26,7 +24,6 @@ const STORAGE_KEY_AUTOSAVE = 'wrc_autosave_enabled_v5';
 
 const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
   const [activeSubTab, setActiveTab] = useState<DashboardSubTab>('trades');
-  const [viewMode, setViewMode] = useState<'table' | 'grid' | 'bubbles'>('table');
   const [news, setNews] = useState<NewsItem[]>([]);
   const [showAddNews, setShowAddNews] = useState(false);
   const [editingNewsItem, setEditingNewsItem] = useState<NewsItem | null>(null);
@@ -171,45 +168,6 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
     const growth = ((currentPrice - entryPrice) / entryPrice) * 100;
     return trade.direction === TradeDirection.BUY ? growth : -growth;
   };
-
-  const aggregatedTraderData = React.useMemo(() => {
-    const traderMap: Record<string, {
-      traderName: string;
-      totalPnL: number;
-      totalLots: number;
-      tradeCount: number;
-      growthSum: number;
-    }> = {};
-
-    trades.forEach(trade => {
-      const name = trade.traderName || 'Unknown';
-      const pnl = calculateDynamicPnL(trade);
-      const growth = calculateDynamicGrowth(trade);
-
-      if (!traderMap[name]) {
-        traderMap[name] = {
-          traderName: name,
-          totalPnL: 0,
-          totalLots: 0,
-          tradeCount: 0,
-          growthSum: 0
-        };
-      }
-
-      traderMap[name].totalPnL += pnl;
-      traderMap[name].totalLots += trade.lotSize;
-      traderMap[name].tradeCount += 1;
-      traderMap[name].growthSum += growth;
-    });
-
-    return Object.values(traderMap).map(t => ({
-      traderName: t.traderName,
-      totalPnL: t.totalPnL,
-      avgGrowth: t.tradeCount > 0 ? t.growthSum / t.tradeCount : 0,
-      totalLots: t.totalLots,
-      tradeCount: t.tradeCount
-    }));
-  }, [trades, livePrices]);
 
   const syncAccountMetrics = () => {
     setAccounts(prevAccounts => prevAccounts.map(acc => {
@@ -754,25 +712,6 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
                     </button>
                   ))}
                 </div>
-
-                {activeSubTab === 'trades' && (
-                  <div className={`flex p-1 rounded-lg ${settings.theme === 'dark' ? 'bg-white/5' : 'bg-slate-200'}`}>
-                    {[
-                      { id: 'table', icon: 'table_rows', label: 'Table' },
-                      { id: 'grid', icon: 'grid_view', label: 'Grid' },
-                      { id: 'bubbles', icon: 'bubble_chart', label: 'Bubbles' }
-                    ].map((v) => (
-                      <button 
-                        key={v.id}
-                        onClick={() => setViewMode(v.id as any)} 
-                        className={`flex items-center gap-2 px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded transition-all ${viewMode === v.id ? 'bg-white dark:bg-white/10 text-primary shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
-                      >
-                        <span className="material-symbols-outlined text-[14px]">{v.icon}</span>
-                        <span className="hidden sm:inline">{v.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {(activeSubTab === 'trades' || activeSubTab === 'history') && (
@@ -823,11 +762,7 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
               </div>
             </div>
 
-            {viewMode === 'bubbles' && activeSubTab === 'trades' ? (
-              <TraderBubbles data={aggregatedTraderData} />
-            ) : viewMode === 'grid' && activeSubTab === 'trades' ? (
-              <TraderHeatmapGrid data={aggregatedTraderData} />
-            ) : activeSubTab === 'bridge' ? (
+            {activeSubTab === 'bridge' ? (
               <div className="flex-1 flex flex-col p-8 bg-white border-t border-slate-200 overflow-y-auto no-scrollbar">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                   {[
