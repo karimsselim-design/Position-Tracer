@@ -1,0 +1,7 @@
+{
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "name": "Position Tracer ",
+  "description": "Streamlined institutional-grade trading terminal with MT5 bridge integration."
+}

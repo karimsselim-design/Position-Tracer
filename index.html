@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhiteRock Terminal | Institutional Grade Trading</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: '#b91c1c',
+              'background-dark': '#0a0c10',
+              'background-light': '#f8fafc',
+              'navy-gray': '#1e2329',
+              'panel-bg-dark': 'rgba(23, 29, 37, 0.85)',
+              'panel-bg-light': 'rgba(255, 255, 255, 0.95)',
+              success: '#059669',
+              danger: '#b91c1c',
+              warning: '#f59e0b',
+              muted: '#64748b',
+            },
+            fontFamily: {
+              display: ['Inter', 'Tajawal', 'sans-serif'],
+              sans: ['Inter', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :root {
+        --ticker-duration: 35s;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .dark body {
+        background-color: #05070a;
+        color: white;
+      }
+      body:not(.dark) {
+        background-color: #f8fafc;
+        color: #0f172a;
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      @keyframes ticker-continuous {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+      .animate-ticker {
+        display: inline-flex;
+        white-space: nowrap;
+        animation: ticker-continuous var(--ticker-duration) linear infinite;
+        will-change: transform;
+      }
+      .glass-panel {
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+      }
+      .dark .glass-panel {
+        background: rgba(13, 17, 23, 0.8);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .glass-panel:not(.dark) {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+      .tabular-nums { font-variant-numeric: tabular-nums; }
+
+      /* Animations for Settings Panel */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes slideInFromRight {
+        from { transform: translateX(1rem); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideInFromTop {
+        from { transform: translateY(-0.5rem); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+      }
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+      .animate-in.fade-in {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+      .animate-in.slide-in-from-right-4 {
+        animation: slideInFromRight 0.3s ease-out forwards;
+      }
+      .animate-in.slide-in-from-top-2 {
+        animation: slideInFromTop 0.3s ease-out forwards;
+      }
+
+      /* ULTRA-AGGRESSIVE TRADINGVIEW BRANDING SUPPRESSION */
+      .tradingview-widget-copyright, 
+      [class*="tradingview-widget-copyright"],
+      .tv-embed-widget-wrapper__copyright,
+      [class*="tv-embed-widget-wrapper__copyright"],
+      .tv-widget-logo,
+      [class*="tv-widget-logo"],
+      .tv-copyright,
+      [id*="tradingview-copyright"],
+      a[href*="tradingview.com"],
+      svg[class*="tv-logo"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+      }
+
+      .ticker-container {
+        height: 46px !important;
+        min-height: 46px !important;
+        max-height: 46px !important;
+        overflow: hidden !important;
+        position: relative !important;
+        display: block !important;
+      }
+
+      tv-ticker-tape {
+        display: block !important;
+        height: 46px !important;
+        overflow: hidden !important;
+      }
+
+      .tradingview-widget-container {
+        background-color: transparent !important;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
