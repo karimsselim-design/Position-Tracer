@@ -458,6 +458,14 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
     t.traderName.toLowerCase().includes(tradeSearchTerm.toLowerCase())
   );
 
+  const totalFloatingPnL = [...trades, ...mt5Positions].reduce((acc, t) => acc + calculateDynamicPnL(t), 0);
+  const baseBalance = 1244500;
+  const mt5Balance = mt5Account ? mt5Account.balance : 0;
+  const totalBalance = baseBalance + mt5Balance;
+  const totalEquity = totalBalance + totalFloatingPnL;
+  const totalMargin = accounts.reduce((sum, a) => sum + a.margin, 0) + (mt5Account ? mt5Account.margin : 0);
+  const marginUtilization = totalEquity > 0 ? (totalMargin / totalEquity) * 100 : 0;
+
   const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : settings.layoutDensity === 'relaxed' ? "px-6 py-5" : "px-4 py-3.5";
 
   const renderAccountsTable = () => (
