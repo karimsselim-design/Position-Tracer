@@ -449,15 +449,15 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
         <table className="w-full text-left border-collapse min-w-[1000px] table-fixed">
           <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-20">
             <tr className="text-[9px] font-bold text-muted uppercase tracking-widest">
-              <th className={tableCellPadding + " w-12 text-center"}>SEL</th>
-              <th className={tableCellPadding + " w-48"}>ACCOUNT NAME</th>
-              <th className={tableCellPadding + " w-32"}>ACCOUNT ID</th>
-              <th className={tableCellPadding + " w-40"}>BALANCE (CASH)</th>
-              <th className={tableCellPadding + " w-40"}>EQUITY (LIVE)</th>
-              <th className={tableCellPadding + " w-32"}>MARGIN</th>
-              <th className={tableCellPadding + " w-32"}>FREE MARGIN</th>
-              <th className={tableCellPadding + " w-32"}>FLOATING P/L</th>
-              <th className={tableCellPadding + " w-32 text-center"}>CONNECTIVITY</th>
+              <th className={tableCellPadding + " w-12 text-center whitespace-nowrap"}>SEL</th>
+              <th className={tableCellPadding + " w-48 text-center whitespace-nowrap"}>ACCOUNT NAME</th>
+              <th className={tableCellPadding + " w-32 text-center whitespace-nowrap"}>ACCOUNT ID</th>
+              <th className={tableCellPadding + " w-40 text-center whitespace-nowrap"}>BALANCE (CASH)</th>
+              <th className={tableCellPadding + " w-40 text-center whitespace-nowrap"}>EQUITY (LIVE)</th>
+              <th className={tableCellPadding + " w-32 text-center whitespace-nowrap"}>MARGIN</th>
+              <th className={tableCellPadding + " w-32 text-center whitespace-nowrap"}>FREE MARGIN</th>
+              <th className={tableCellPadding + " w-32 text-center whitespace-nowrap"}>FLOATING P/L</th>
+              <th className={tableCellPadding + " w-32 text-center whitespace-nowrap"}>CONNECTIVITY</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 font-mono text-[12px] font-bold">
@@ -466,30 +466,30 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                 <td className={tableCellPadding + " text-center"}>
                   <input type="checkbox" className="size-3 rounded border-slate-300 bg-white accent-primary cursor-pointer" />
                 </td>
-                <td className={tableCellPadding}>
-                  <div className="flex flex-col">
+                <td className={tableCellPadding + " text-center"}>
+                  <div className="flex flex-col items-center">
                     <span className="text-slate-900 font-black uppercase text-[10px]">{acc.name}</span>
                     <span className="text-[7px] text-slate-500 font-black uppercase tracking-widest mt-0.5">
                       {acc.lastUpdated ? `Last Sync: ${new Date(acc.lastUpdated).toLocaleTimeString()}` : 'Primary Cluster'}
                     </span>
                   </div>
                 </td>
-                <td className={tableCellPadding}>
+                <td className={tableCellPadding + " text-center"}>
                   <span className="text-slate-400 font-bold">{acc.id}</span>
                 </td>
-                <td className={tableCellPadding + " tabular-nums text-slate-600"}>
+                <td className={tableCellPadding + " tabular-nums text-center text-slate-600"}>
                   ${acc.balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
-                <td className={tableCellPadding + " tabular-nums text-slate-900 font-extrabold text-[13px]"}>
+                <td className={tableCellPadding + " tabular-nums text-center text-slate-900 font-extrabold text-[13px]"}>
                   ${acc.equity.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
-                <td className={tableCellPadding + " tabular-nums text-slate-500"}>
+                <td className={tableCellPadding + " tabular-nums text-center text-slate-500"}>
                   ${acc.margin.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
-                <td className={tableCellPadding + " tabular-nums text-slate-600"}>
+                <td className={tableCellPadding + " tabular-nums text-center text-slate-600"}>
                   ${acc.freeMargin.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
-                <td className={`${tableCellPadding} tabular-nums font-extrabold text-[13px] ${acc.profit >= 0 ? 'text-success' : 'text-danger'}`}>
+                <td className={`${tableCellPadding} tabular-nums font-extrabold text-[13px] text-center ${acc.profit >= 0 ? 'text-success' : 'text-danger'}`}>
                   {acc.profit >= 0 ? '+' : '-'}${Math.abs(acc.profit).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </td>
                 <td className={tableCellPadding + " text-center"}>
@@ -776,19 +776,19 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                   <table className="w-full text-left border-collapse min-w-[1300px] table-fixed">
                     <thead className="bg-slate-50 border-b border-slate-200 sticky top-0 z-20">
                       <tr className="text-[9px] font-bold text-muted uppercase tracking-widest">
-                        <th className={tableCellPadding + " w-[120px] text-center"}>ASSET</th>
-                        <th className={tableCellPadding + " w-[110px] text-right"}>LIVE FEED</th>
-                        <th className={tableCellPadding + " w-[90px] text-center"}>ENTRY</th>
-                        <th className={tableCellPadding + " w-[75px] text-center"}>BIAS</th>
-                        <th className={tableCellPadding + " w-[70px] text-center"}>LOT</th>
-                        <th className={tableCellPadding + " w-[85px] text-center"}>SL</th>
-                        <th className={tableCellPadding + " w-[85px] text-center"}>TP 1</th>
-                        <th className={tableCellPadding + " w-[85px] text-center"}>TARGET</th>
-                        <th className={tableCellPadding + " w-[110px] text-right"}>PNL (USD)</th>
-                        <th className={tableCellPadding + " w-[85px] text-center"}>GROWTH</th>
-                        <th className={tableCellPadding + " w-[90px] text-center"}>progress</th>
-                        <th className={tableCellPadding + " w-[110px] text-center"}>T. name</th>
-                        <th className={tableCellPadding + " w-[80px] text-center"}>ACT</th>
+                        <th className={tableCellPadding + " w-[120px] text-center whitespace-nowrap"}>ASSET</th>
+                        <th className={tableCellPadding + " w-[110px] text-center whitespace-nowrap"}>LIVE FEED</th>
+                        <th className={tableCellPadding + " w-[90px] text-center whitespace-nowrap"}>ENTRY</th>
+                        <th className={tableCellPadding + " w-[75px] text-center whitespace-nowrap"}>BIAS</th>
+                        <th className={tableCellPadding + " w-[70px] text-center whitespace-nowrap"}>LOT</th>
+                        <th className={tableCellPadding + " w-[85px] text-center whitespace-nowrap"}>SL</th>
+                        <th className={tableCellPadding + " w-[85px] text-center whitespace-nowrap"}>TP 1</th>
+                        <th className={tableCellPadding + " w-[85px] text-center whitespace-nowrap"}>TARGET</th>
+                        <th className={tableCellPadding + " w-[110px] text-center whitespace-nowrap"}>PNL (USD)</th>
+                        <th className={tableCellPadding + " w-[85px] text-center whitespace-nowrap"}>GROWTH</th>
+                        <th className={tableCellPadding + " w-[90px] text-center whitespace-nowrap"}>progress</th>
+                        <th className={tableCellPadding + " w-[110px] text-center whitespace-nowrap"}>T. name</th>
+                        <th className={tableCellPadding + " w-[80px] text-center whitespace-nowrap"}>ACT</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-200 font-mono text-[12px] font-bold">
@@ -803,9 +803,9 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
 
                         return (
                           <tr key={trade.id} className="hover:bg-slate-100/50 even:bg-slate-50/30 transition-all duration-300 group/row">
-                            <td className="px-5 py-3">
+                            <td className={tableCellPadding + " text-center"}>
                               {/* Colors and shadow are strictly forced. No dark mode variants. */}
-                              <div className="inline-flex items-center gap-2 bg-[#f2f5f9] border border-[#dce2e8] rounded-full p-1 pr-4 w-[110.787px] h-[43.6px] shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-default">
+                              <div className="inline-flex items-center justify-center gap-2 bg-[#f2f5f9] border border-[#dce2e8] rounded-full p-1 pr-4 w-[110.787px] h-[43.6px] shadow-[0_4px_12px_rgba(0,0,0,0.08)] cursor-default mx-auto">
                                 <div className="flex items-center justify-center w-7 h-7 rounded-full overflow-hidden shrink-0 bg-white shadow-sm">
                                   <AssetIcon symbol={trade.symbol} size={18} />
                                 </div>
@@ -814,8 +814,8 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                                 </span>
                               </div>
                             </td>
-                            <td className={tableCellPadding}>
-                              <div className="flex items-center justify-end gap-1">
+                            <td className={tableCellPadding + " text-center tabular-nums"}>
+                              <div className="flex items-center justify-center gap-1">
                                  <span className={`text-[12px] font-bold tabular-nums ${!isHistoryMode && meta?.direction === 'up' ? 'text-success' : !isHistoryMode && meta?.direction === 'down' ? 'text-danger' : 'text-slate-900'}`}>
                                    {currentLivePrice.toLocaleString(undefined, { 
                                      minimumFractionDigits: trade.symbol.includes('EUR') || trade.symbol.includes('GBP') ? 4 : 2,
@@ -824,11 +824,11 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                                  </span>
                               </div>
                             </td>
-                            <td className={tableCellPadding + " text-center"}>
+                            <td className={tableCellPadding + " text-center tabular-nums"}>
                               <EditableNumeric 
                                 value={trade.entry || currentLivePrice} 
                                 onChange={(val) => handleUpdateTrade(trade.id, { entry: val })}
-                                className={`font-bold text-[12px] leading-[18px] transition-colors duration-300 ${!trade.entry ? (meta?.direction === 'up' ? 'text-success' : meta?.direction === 'down' ? 'text-danger' : 'text-slate-500') : 'text-slate-500'}`} 
+                                className={`font-bold text-[12px] leading-[18px] text-center transition-colors duration-300 ${!trade.entry ? (meta?.direction === 'up' ? 'text-success' : meta?.direction === 'down' ? 'text-danger' : 'text-slate-500') : 'text-slate-500'}`} 
                                 step="0.0001"
                               />
                             </td>
@@ -843,45 +843,53 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                             <td className={tableCellPadding + " text-center"}>
                               <button 
                                 onClick={() => !isHistoryMode && handleUpdateTrade(trade.id, { lotSize: trade.lotSize + 0.1 })}
-                                className="font-bold text-slate-700 text-[12px] leading-[18px]"
+                                className="font-bold text-slate-700 text-[12px] leading-[18px] text-center"
                               >
                                 {trade.lotSize.toFixed(2)}
                               </button>
                             </td>
-                            <td className={tableCellPadding + " text-center"}>
-                              <EditableNumeric 
-                                value={trade.sl} 
-                                onChange={(val) => handleUpdateTrade(trade.id, { sl: val })}
-                                className="text-danger font-bold text-[12px] leading-[18px]" 
-                                step="0.0001"
-                              />
+                            <td className={tableCellPadding + " text-center tabular-nums"}>
+                              <div className="flex justify-center">
+                                <EditableNumeric 
+                                  value={trade.sl} 
+                                  onChange={(val) => handleUpdateTrade(trade.id, { sl: val })}
+                                  className="text-danger font-bold text-[12px] leading-[18px] text-center" 
+                                  step="0.0001"
+                                />
+                              </div>
                             </td>
-                            <td className={tableCellPadding + " text-center"}>
-                              <EditableNumeric 
-                                value={trade.tp1} 
-                                onChange={(val) => handleUpdateTrade(trade.id, { tp1: val })}
-                                className="text-success font-bold text-[12px] leading-[18px]" 
-                                step="0.0001"
-                              />
+                            <td className={tableCellPadding + " text-center tabular-nums"}>
+                              <div className="flex justify-center">
+                                <EditableNumeric 
+                                  value={trade.tp1} 
+                                  onChange={(val) => handleUpdateTrade(trade.id, { tp1: val })}
+                                  className="text-success font-bold text-[12px] leading-[18px] text-center" 
+                                  step="0.0001"
+                                />
+                              </div>
                             </td>
-                            <td className={tableCellPadding + " text-center"}>
-                              <EditableNumeric 
-                                value={trade.dayTarget || 5000} 
-                                onChange={(val) => handleUpdateTrade(trade.id, { dayTarget: val })}
-                                className="text-slate-400 font-bold text-[12px] leading-[18px]" 
-                                step="100"
-                              />
+                            <td className={tableCellPadding + " text-center tabular-nums"}>
+                              <div className="flex justify-center">
+                                <EditableNumeric 
+                                  value={trade.dayTarget || 5000} 
+                                  onChange={(val) => handleUpdateTrade(trade.id, { dayTarget: val })}
+                                  className="text-slate-400 font-bold text-[12px] leading-[18px] text-center" 
+                                  step="100"
+                                />
+                              </div>
                             </td>
-                            <td className={`${tableCellPadding} text-right font-bold tabular-nums text-[12px] ${isProfitable ? 'text-success' : 'text-danger'}`}>
-                               {isProfitable ? '+' : '-'}${Math.abs(dynamicPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <td className={tableCellPadding + " text-center tabular-nums"}>
+                               <div className={`inline-flex items-center justify-center px-2 py-1 rounded-md border tabular-nums font-bold min-w-[100px] ${isProfitable ? 'bg-success/10 border-success/20 text-success' : 'bg-danger/10 border-danger/20 text-danger'}`}>
+                                 {isProfitable ? '+' : '-'}${Math.abs(dynamicPnL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                               </div>
                             </td>
-                            <td className={tableCellPadding}>
-                              <div className={`flex items-center justify-center gap-1 px-2 py-1 rounded-md border tabular-nums font-bold w-[60px] ${dynamicGrowth >= 0 ? 'bg-success/20 border-success/30 text-success' : 'bg-danger/20 border-danger/30 text-danger'}`}>
+                            <td className={tableCellPadding + " text-center tabular-nums"}>
+                              <div className={`flex items-center justify-center gap-1 px-2 py-1 rounded-md border tabular-nums font-bold w-[60px] mx-auto ${dynamicGrowth >= 0 ? 'bg-success/20 border-success/30 text-success' : 'bg-danger/20 border-danger/30 text-danger'}`}>
                                  <span className="text-[12px] leading-[18px]">{isProfitable ? '+' : ''}{dynamicGrowth.toFixed(2)}%</span>
                               </div>
                             </td>
-                            <td className={tableCellPadding}>
-                              <div className="flex flex-col gap-0.5 w-full max-w-[60px] mx-auto">
+                            <td className={tableCellPadding + " text-center"}>
+                              <div className="flex flex-col items-center gap-0.5 w-full max-w-[90px] mx-auto">
                                 <div className="h-1 w-full bg-slate-200 rounded-full overflow-hidden">
                                   <div className={`h-full transition-all duration-1000 ${isProfitable ? 'bg-success' : 'bg-danger'}`} style={{ width: `${progressValue}%` }} />
                                 </div>
@@ -892,7 +900,7 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                               <EditableText 
                                 value={trade.traderName} 
                                 onChange={(val) => handleUpdateTrade(trade.id, { traderName: val })}
-                                className="text-slate-700 font-bold text-[10px] uppercase truncate" 
+                                className="text-slate-700 font-bold text-[10px] uppercase truncate text-center" 
                               />
                             </td>
                             <td className={tableCellPadding + " text-center"}>
