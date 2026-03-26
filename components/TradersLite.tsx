@@ -460,7 +460,7 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
     setEditingTrade(trade);
   };
 
-  // --- CSV BULLETPROOF LOGIC ---
+  // --- CSV EXPORT LOGIC ONLY ---
   const handleExportCSV = () => {
     try {
       if (trades.length === 0) {
@@ -483,57 +483,6 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
     } catch (error) {
       console.error("Export failed", error);
       alert("Export failed due to an unexpected error.");
-    }
-  };
-
-  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const file = event.target.files?.[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const text = e.target?.result as string;
-        if (!text) return;
-        const rows = text.split('\n').filter(row => row.trim() !== '');
-        if (rows.length < 2) {
-           alert("CSV file is empty or missing data rows.");
-           return;
-        }
-        
-        const dataRows = rows.slice(1);
-        const importedTrades: Trade[] = dataRows.map((row, index) => {
-          const columns = row.split(',');
-          return {
-            id: `#TR-IMP-${Math.floor(10000 + Math.random() * 90000)}-${index}`,
-            accountId: 'IMPORTED-01',
-            symbol: columns[1] || MARKET_ASSETS[0].id,
-            direction: (columns[2] as TradeDirection) || TradeDirection.BUY,
-            entry: parseFloat(columns[3]) || 0, // Fallback to 0
-            livePrice: parseFloat(columns[3]) || 0,
-            lotSize: parseFloat(columns[4]) || 1.0, // Fallback to 1.0
-            sl: parseFloat(columns[5]) || 0, // Fallback to 0
-            tp1: parseFloat(columns[6]) || 0, // Fallback to 0
-            tp2: 0,
-            tp3: 0,
-            dayTarget: parseFloat(columns[7]) || 5000,
-            traderName: columns[8] || 'Karam',
-            timeOpen: columns[9] || new Date().toISOString().replace('T', ' ').substring(0, 19),
-            pnlUsd: 0,
-            growthPct: 0,
-            status: 'ACTIVE',
-            traderCompanyId: 'WRC-LDN-01'
-          };
-        });
-
-        setTrades(prev => [...importedTrades, ...prev]);
-        event.target.value = ''; // reset input
-        alert("Data imported successfully!");
-      };
-      reader.readAsText(file);
-    } catch (error) {
-      console.error("Import failed", error);
-      alert("Error reading CSV file. Check the format.");
     }
   };
   // -----------------------------
@@ -840,16 +789,13 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
               )}
               
               <div className="flex items-center gap-4">
-                {/* --- ADDED CSV BUTTONS HERE --- */}
+                {/* --- UPDATED CSV BUTTONS (EXPORT ONLY) --- */}
                 {(activeSubTab === 'trades') && (
                   <div className="flex items-center gap-2 mr-2">
-                    <button onClick={handleExportCSV} className="bg-slate-800 text-white px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-slate-700 transition-colors shadow-sm">
-                      Export CSV
+                    <button onClick={handleExportCSV} className="bg-slate-800 text-white px-4 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-slate-700 transition-colors shadow-sm flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[14px]">download</span>
+                      Export Data
                     </button>
-                    <label className="bg-emerald-600 cursor-pointer text-white px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-colors shadow-sm m-0 flex items-center">
-                      Import CSV
-                      <input type="file" accept=".csv" className="hidden" onChange={handleImportCSV} />
-                    </label>
                   </div>
                 )}
                 {/* ----------------------------- */}
