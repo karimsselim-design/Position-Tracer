@@ -460,6 +460,84 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
     setEditingTrade(trade);
   };
 
+  // --- CSV BULLETPROOF LOGIC ---
+  const handleExportCSV = () => {
+    try {
+      if (trades.length === 0) {
+        alert("No trades available to export.");
+        return;
+      }
+      const headers = "ID,Asset,Direction,Entry Price,Lot Size,SL,TP1,Target,Trader Name,Date\n";
+      const csvRows = trades.map(trade => {
+        return `${trade.id},${trade.symbol},${trade.direction},${trade.entry || 0},${trade.lotSize || 0},${trade.sl || 0},${trade.tp1 || 0},${trade.dayTarget || 0},${trade.traderName || 'Karam'},${trade.timeOpen || ''}`;
+      });
+      const csvContent = headers + csvRows.join("\n");
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Position_Tracer_Trades.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Export failed", error);
+      alert("Export failed due to an unexpected error.");
+    }
+  };
+
+  const handleImportCSV = (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        if (!text) return;
+        const rows = text.split('\n').filter(row => row.trim() !== '');
+        if (rows.length < 2) {
+           alert("CSV file is empty or missing data rows.");
+           return;
+        }
+        
+        const dataRows = rows.slice(1);
+        const importedTrades: Trade[] = dataRows.map((row, index) => {
+          const columns = row.split(',');
+          return {
+            id: `#TR-IMP-${Math.floor(10000 + Math.random() * 90000)}-${index}`,
+            accountId: 'IMPORTED-01',
+            symbol: columns[1] || MARKET_ASSETS[0].id,
+            direction: (columns[2] as TradeDirection) || TradeDirection.BUY,
+            entry: parseFloat(columns[3]) || 0, // Fallback to 0
+            livePrice: parseFloat(columns[3]) || 0,
+            lotSize: parseFloat(columns[4]) || 1.0, // Fallback to 1.0
+            sl: parseFloat(columns[5]) || 0, // Fallback to 0
+            tp1: parseFloat(columns[6]) || 0, // Fallback to 0
+            tp2: 0,
+            tp3: 0,
+            dayTarget: parseFloat(columns[7]) || 5000,
+            traderName: columns[8] || 'Karam',
+            timeOpen: columns[9] || new Date().toISOString().replace('T', ' ').substring(0, 19),
+            pnlUsd: 0,
+            growthPct: 0,
+            status: 'ACTIVE',
+            traderCompanyId: 'WRC-LDN-01'
+          };
+        });
+
+        setTrades(prev => [...importedTrades, ...prev]);
+        event.target.value = ''; // reset input
+        alert("Data imported successfully!");
+      };
+      reader.readAsText(file);
+    } catch (error) {
+      console.error("Import failed", error);
+      alert("Error reading CSV file. Check the format.");
+    }
+  };
+  // -----------------------------
+
   const getMT5Status = () => {
     if (!isMT5Active) return { label: 'Disconnected', color: 'text-slate-400', bg: 'bg-slate-400/10', border: 'border-slate-400/20', icon: 'link_off' };
     if (!mt5Account || mt5Account.status === 'DISCONNECTED') return { label: 'Connecting', color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20', icon: 'sync', animate: 'animate-spin' };
@@ -482,7 +560,7 @@ const TradersLite: React.FC<{ theme: 'dark' | 'light' }> = ({ theme }) => {
   const totalMargin = accounts.reduce((sum, a) => sum + a.margin, 0) + (mt5Account ? mt5Account.margin : 0);
   const marginUtilization = totalEquity > 0 ? (totalMargin / totalEquity) * 100 : 0;
 
-const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : settings.layoutDensity === 'relaxed' ? "px-6 py-5" : "px-4 py-3.5";
+  const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : settings.layoutDensity === 'relaxed' ? "px-6 py-5" : "px-4 py-3.5";
 
   const renderAccountsTable = () => (
     <div className="flex-1 flex flex-col min-h-0 bg-white border-t border-slate-200 relative">
@@ -555,6 +633,7 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
     </div>
   );
 
+  // --- WSOD BULLETPROOF FIX HERE ---
   const EditableNumeric = ({ 
     value, 
     onChange, 
@@ -566,12 +645,14 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
     className?: string, 
     step?: string 
   }) => {
-    const [localValue, setLocalValue] = useState(value.toString());
+    // SAFE FALLBACK: If value is undefined/null, default to 0 to prevent .toString() crash.
+    const safeValue = value ?? 0;
+    const [localValue, setLocalValue] = useState(safeValue.toString());
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
       if (document.activeElement !== inputRef.current) {
-        setLocalValue(value.toString());
+        setLocalValue((value ?? 0).toString());
       }
     }, [value]);
 
@@ -587,7 +668,7 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
     };
 
     const handleBlur = () => {
-      setLocalValue(value.toString());
+      setLocalValue((value ?? 0).toString());
     };
 
     return (
@@ -614,11 +695,12 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
   }) => (
     <input 
       type="text" 
-      value={value} 
+      value={value || ''} 
       onChange={(e) => onChange(e.target.value)}
       className={`bg-white border border-transparent hover:border-slate-300 focus:border-primary focus:bg-white rounded px-1 w-full text-center font-mono transition-all outline-none ${className}`}
     />
   );
+  // --------------------------------
 
   const SearchableAsset: React.FC<{ 
     symbol: string, 
@@ -758,6 +840,20 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
               )}
               
               <div className="flex items-center gap-4">
+                {/* --- ADDED CSV BUTTONS HERE --- */}
+                {(activeSubTab === 'trades') && (
+                  <div className="flex items-center gap-2 mr-2">
+                    <button onClick={handleExportCSV} className="bg-slate-800 text-white px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-slate-700 transition-colors shadow-sm">
+                      Export CSV
+                    </button>
+                    <label className="bg-emerald-600 cursor-pointer text-white px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 transition-colors shadow-sm m-0 flex items-center">
+                      Import CSV
+                      <input type="file" accept=".csv" className="hidden" onChange={handleImportCSV} />
+                    </label>
+                  </div>
+                )}
+                {/* ----------------------------- */}
+
                 <button onClick={() => setShowSettings(true)} className="text-slate-400 hover:text-primary transition-all flex items-center justify-center">
                   <span className="material-symbols-outlined text-[20px]">settings</span>
                 </button>
@@ -915,7 +1011,7 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                             <td className={tableCellPadding + " text-center tabular-nums"}>
                               <div className="flex justify-center">
                                 <EditableNumeric 
-                                  value={trade.sl} 
+                                  value={trade.sl || 0} 
                                   onChange={(val) => handleUpdateTrade(trade.id, { sl: val })}
                                   className="text-danger font-bold text-[12px] leading-[18px] text-center" 
                                   step="0.0001"
@@ -925,7 +1021,7 @@ const tableCellPadding = settings.layoutDensity === 'compact' ? "px-3 py-2" : se
                             <td className={tableCellPadding + " text-center tabular-nums"}>
                               <div className="flex justify-center">
                                 <EditableNumeric 
-                                  value={trade.tp1} 
+                                  value={trade.tp1 || 0} 
                                   onChange={(val) => handleUpdateTrade(trade.id, { tp1: val })}
                                   className="text-success font-bold text-[12px] leading-[18px] text-center" 
                                   step="0.0001"
